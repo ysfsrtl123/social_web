@@ -1,0 +1,145 @@
+Bu proje hem ön uç hem de arka uç tarafında bir dizi tasarım kararı gerektirir. Aşağıda, uygulamanın mimarisi ve bileşenleri hakkında detaylı bir plan sunuyorum. Bu plan, **senin mevcut bilgi düzeyine uygun olacak şekilde** açıklayıcıdır.
+
+---
+
+### **Proje Mimarisi**
+Proje, MVC'ye uygun bir yapı ile tasarlanabilir. Şimdi bu projeyi bölümler halinde inceleyelim:
+
+---
+
+### **1. Genel Mimarinin Yapısı**
+#### a) **Ön Uç (Frontend)**
+- **ReactJS**:
+  - Kullanıcı arayüzü oluşturmak için React kullan.
+  - Bileşen bazlı bir yapı kurarak, yeniden kullanılabilir parçalar oluştur.
+- **State Management**:
+  - Basit durumlar için React'ın kendi `useState` ve `useReducer`'ını kullanabilirsin.
+  - Daha karmaşık durumlar için `Redux` ya da `Context API` gibi bir yönetim aracı düşünebilirsin.
+- **Routing**:
+  - Kullanıcı oturumları ve içerik navigasyonu için `React Router` kullan.
+- **UI Kütüphanesi**:
+  - Kullanıcı deneyimini kolaylaştırmak için `Material-UI`, `TailwindCSS`, ya da `Bootstrap` gibi bir kütüphane tercih edebilirsin.
+
+#### b) **Arka Uç (Backend)**
+- **Node.js**:
+  - API oluşturmak için temel platform.
+- **Express.js**:
+  - RESTful API geliştirme için kullan.
+  - MVC düzenini benimseyerek kontrol edilebilir bir yapı kur.
+- **Veritabanı**:
+  - Kullanıcı verilerini, soruları ve cevapları saklamak için bir veritabanı.
+  - SQL tabanlı bir veritabanı (MySQL/PostgreSQL) veya NoSQL tabanlı bir veritabanı (MongoDB) kullanabilirsin.
+
+#### c) **Veritabanı Tasarımı**
+- **Kullanıcılar** (Users):
+  - `id`, `username`, `password`, `gender`, `isAnonymous` gibi sütunlar.
+- **Sorular** (Questions):
+  - `id`, `userId`, `content`, `isAnonymous`, `createdAt`.
+- **Cevaplar** (Answers):
+  - `id`, `questionId`, `userId`, `content`, `createdAt`.
+
+#### d) **Kimlik Doğrulama (Authentication)**
+- JWT (JSON Web Token):
+  - Kullanıcı oturumlarını yönetmek ve güvenlik sağlamak için JWT kullanabilirsin.
+  - Kullanıcı giriş yaptığında bir JWT oluştur ve istemciye gönder.
+
+#### e) **Deployment**
+- **Frontend Deployment**:
+  - React uygulamanı `Vercel`, `Netlify` veya bir CDN üzerinden dağıtabilirsin.
+- **Backend Deployment**:
+  - Node.js ve Express.js uygulamanı `Heroku`, `AWS`, `DigitalOcean`, veya `Railway` gibi bir platformda dağıtabilirsin.
+- **Veritabanı**:
+  - Veritabanını `MongoDB Atlas`, `AWS RDS`, veya `Supabase` gibi bir bulut sağlayıcısında barındır.
+
+---
+
+### **2. Örnek Akış**
+1. Kullanıcı oturum açar veya anonim modda soru sorar.
+2. API, soruyu `Questions` tablosuna kaydeder ve ilgili `userId` ile ilişkilendirir.
+3. Başka bir kullanıcı, karşı cinsiyetten bir cevap yazarsa, cevap `Answers` tablosuna kaydedilir.
+4. Sorular ve cevaplar, React bileşenlerinde gösterilir.
+
+---
+
+### **3. Önerilen Dosya Yapısı**
+#### **Frontend**
+```
+src/
+├── components/         # Bileşenler (Navbar, QuestionCard, etc.)
+├── pages/              # Sayfa bazlı bileşenler (HomePage, ProfilePage, etc.)
+├── hooks/              # Özel React Hook'lar
+├── services/           # API çağrı fonksiyonları
+├── App.js              # Ana uygulama bileşeni
+└── index.js            # React DOM entegrasyonu
+```
+
+#### **Backend**
+```
+src/
+├── models/             # Veritabanı modelleri
+│   ├── User.js
+│   ├── Question.js
+│   └── Answer.js
+├── controllers/        # İş mantığı
+│   ├── userController.js
+│   ├── questionController.js
+│   └── answerController.js
+├── routes/             # API rotaları
+│   ├── userRoutes.js
+│   ├── questionRoutes.js
+│   └── answerRoutes.js
+├── middlewares/        # Kimlik doğrulama, hata yönetimi
+├── app.js              # Express uygulaması
+└── server.js           # Sunucuyu çalıştıran dosya
+```
+
+---
+
+### **4. Özel İşlevler ve Detaylar**
+#### a) **Anonim Sorular**
+- Kullanıcı `isAnonymous` seçeneğini seçerse, `userId` yerine `Anonymous` değeri gösterilir.
+
+#### b) **Karşı Cins Filtreleme**
+- Kullanıcının cinsiyetine göre cevap verebileceği sorular sunulabilir:
+  - Örneğin, bir `genderFilter` middleware’i yazılarak, istemciden gelen kullanıcının cinsiyetiyle uyumlu olmayan cevaplar engellenebilir.
+
+#### c) **Sorular ve Cevapların Yayınlanması**
+- Sorular ve cevaplar, belirli bir formatta API üzerinden React’e gönderilir:
+```json
+{
+  "questions": [
+    {
+      "id": 1,
+      "content": "Bu sorunun bir örneği",
+      "isAnonymous": true,
+      "answers": [
+        {
+          "id": 1,
+          "content": "Bu bir cevap",
+          "userId": 5
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+### **5. Geliştirme Adımları**
+1. **Backend Geliştirme**:
+   - RESTful API’yi oluştur.
+   - Kullanıcı kimlik doğrulama (JWT) sistemini uygula.
+   - Veritabanı bağlantısını yapılandır ve test et.
+
+2. **Frontend Geliştirme**:
+   - Ana sayfa ve profil sayfası gibi temel bileşenleri oluştur.
+   - API’den veri çekmek için `fetch` veya `axios` kullan.
+
+3. **Test ve Optimizasyon**:
+   - Hem ön uç hem de arka uç tarafında unit test ve entegrasyon testleri yap.
+   - Performansı artırmak için veritabanı sorgularını optimize et.
+
+---
+
+Bu yapıyı takip ederek, uygulamanın hem işlevsel hem de düzenli bir mimariye sahip olmasını sağlayabilirsin. Soruların olursa, detaylı bir şekilde yardımcı olabilirim! 😊
