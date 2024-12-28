@@ -62,36 +62,70 @@ Proje, MVC'ye uygun bir yapı ile tasarlanabilir. Şimdi bu projeyi bölümler h
 ---
 
 ### **3. Önerilen Dosya Yapısı**
-#### **Frontend**
-```
 src/
-├── components/         # Bileşenler (Navbar, QuestionCard, etc.)
-├── pages/              # Sayfa bazlı bileşenler (HomePage, ProfilePage, etc.)
+├── components/         # Yeniden kullanılabilir bileşenler
+│   ├── Navbar.jsx
+│   ├── Sidebar.jsx
+│   └── Table.jsx
+├── pages/              # Sayfa bazlı bileşenler
+│   ├── admin/          # Admin paneline ait sayfalar
+│   │   ├── Dashboard.jsx
+│   │   ├── ManageUsers.jsx
+│   │   └── ManageQuestions.jsx
+│   ├── user/           # Kullanıcı paneline ait sayfalar
+│   │   ├── Home.jsx
+│   │   ├── AskQuestion.jsx
+│   │   └── MyProfile.jsx
+│   └── Auth/           # Giriş ve kayıt sayfaları
+│       ├── Login.jsx
+│       └── Register.jsx
+├── context/            # Context API dosyaları
+│   ├── AuthContext.jsx
+│   └── AdminContext.jsx
 ├── hooks/              # Özel React Hook'lar
+│   ├── useAuth.js
+│   └── useAdmin.js
 ├── services/           # API çağrı fonksiyonları
-├── App.js              # Ana uygulama bileşeni
-└── index.js            # React DOM entegrasyonu
-```
+│   ├── authService.js
+│   ├── questionService.js
+│   └── userService.js
+├── styles/             # Stil dosyaları
+│   ├── global.css
+│   └── theme.css
+├── App.jsx             # Ana uygulama bileşeni
+└── main.jsx            # React DOM entegrasyonu
+
 
 #### **Backend**
 ```
 src/
+├── config/             # Veritabanı ve genel yapılandırma
+│   ├── db.js
+│   └── jwtConfig.js
+├── controllers/        # İş mantığı ve kontrolcüler
+│   ├── adminController.js
+│   ├── userController.js
+│   ├── authController.js
+│   └── questionController.js
+├── middlewares/        # Kimlik doğrulama ve hata yönetimi
+│   ├── authMiddleware.js
+│   ├── adminMiddleware.js
+│   └── errorHandler.js
 ├── models/             # Veritabanı modelleri
 │   ├── User.js
 │   ├── Question.js
 │   └── Answer.js
-├── controllers/        # İş mantığı
-│   ├── userController.js
-│   ├── questionController.js
-│   └── answerController.js
 ├── routes/             # API rotaları
+│   ├── adminRoutes.js
 │   ├── userRoutes.js
-│   ├── questionRoutes.js
-│   └── answerRoutes.js
-├── middlewares/        # Kimlik doğrulama, hata yönetimi
+│   ├── authRoutes.js
+│   └── questionRoutes.js
+├── utils/              # Yardımcı fonksiyonlar
+│   ├── generateToken.js
+│   └── validateInput.js
 ├── app.js              # Express uygulaması
 └── server.js           # Sunucuyu çalıştıran dosya
-```
+
 
 ---
 

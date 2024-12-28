@@ -1,0 +1,13 @@
+{
+  "name": "social_web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "frontend": "npm start --prefix frontend",
+    "backend": "npm start --prefix backend",
+    "start": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0"
+  }
+}
