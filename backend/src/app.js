@@ -2,37 +2,29 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const dotenv = require('dotenv');
-const apiRoutes = require('./routes'); // Assuming you have a routes/index.js for your API routes
+const bodyParser = require('body-parser');
+const path = require('path');
+const apiRoutes = require('./routes/userRoutes'); // routes/index.js dosyasını kullanıyoruz
 
-// Load environment variables
-dotenv.config();
-
-// Initialize Express app
+// Uygulama tanımlaması
 const app = express();
 
-// Middleware
-app.use(cors()); // Enable Cross-Origin Resource Sharing
-app.use(morgan('dev')); // Logging middleware for development
-app.use(express.json()); // Parse JSON request bodies
+// Middleware'ler
+app.use(cors()); // Çapraz kaynak paylaşımı için
+app.use(morgan('dev')); // HTTP isteği loglama
+app.use(bodyParser.json()); // JSON formatındaki verileri işleme
+app.use(bodyParser.urlencoded({ extended: true })); // URL encoded verileri işleme
 
-// API Routes
+// API rotaları
 app.use('/api', apiRoutes);
 
-// Default route
-app.get('/', (req, res) => {
-  res.status(200).send('Welcome to the API!');
-});
+// Statik dosyaları sunmak için (frontend build)
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// Handle 404 errors
-app.use((req, res, next) => {
-  res.status(404).json({ error: 'Route not found!' });
-});
-
-// Global error handler
+// Hata yakalama middleware'i
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  res.status(err.status || 500).send({ error: err.message });
 });
 
 module.exports = app;
