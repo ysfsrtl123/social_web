@@ -1,14 +1,10 @@
-const express = require('express');
-const path = require('path');  // path modülünü ekleyin
+import express from 'express';
+import path from 'path';
 const app = express();  // app'i doğru şekilde başlatın
 
-// Home route
-exports.getHome = (req, res) => {
+
+
+export const getHome = (req, res) => {
   res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
 };
 
-
-
-
-
-module.exports = router;

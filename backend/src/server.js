@@ -1,24 +1,39 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const path = require('path');
+import express from 'express';
+import http from 'http';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url'; // Eksik import
 
-dotenv.config();
+import { sequelize } from './config/db.js'; // Sequelize bağlantısı
+
+const app = express();
+
+// ES Modüllerinde __filename ve __dirname elde etmek için
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// .env dosyasını yükle
+dotenv.config({ path: './config/.env' });
+
+// CORS kullanımı
 app.use(cors());
 
 // Frontend build dizini statik olarak sunuluyor
 app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'build')));
 
-// Ana sayfa için route ekleyin
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'frontend', 'build', 'index.html'));
-});
+// Veritabanı bağlantısını kontrol et
+sequelize.authenticate()
+  .then(() => {
+    console.log('Veri tabanına başarıyla bağlanıldı.');
+  })
+  .catch(err => {
+    console.error('Veri tabanı bağlantı hatası:', err);
+  });
 
-// Diğer API rotaları buraya eklenebilir
-// app.get('/api', (req, res) => { ... });
+  
 
+// Sunucuyu başlat
 const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 
